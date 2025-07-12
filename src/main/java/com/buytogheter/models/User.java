@@ -7,9 +7,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "tb_users")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
+@ToString
+@Table(
+        name = "tb_users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_username", columnNames = "username"),
+                @UniqueConstraint(name = "uk_email", columnNames = "email")
+        }
+)
 public class User extends BaseEntity{
 
     @Column(length = 50, nullable = false)
@@ -21,6 +28,8 @@ public class User extends BaseEntity{
     @Column(nullable = false)
     private String password;
     private String avatar;
+    @Column(name = "role", nullable = false, length = 25)
+    private Role role = Role.ROLE_CLIENTE;
 
     @ManyToMany
     @JoinTable(
@@ -30,5 +39,9 @@ public class User extends BaseEntity{
     )
     @Setter(AccessLevel.NONE)
     private Set<User> friends = new HashSet<>();
+
+    public enum Role {
+        ROLE_ADMIN, ROLE_CLIENTE
+    }
 
 }
